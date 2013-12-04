@@ -6,7 +6,7 @@ require "base64"
 
 module D2LValence
   class Client
-    attr_accessor :app_id, :app_key, :user_id, :user_key
+    attr_accessor :end_point, :app_id, :app_key, :user_id, :user_key
 
     # Initializes a new Client object
     #
@@ -28,10 +28,11 @@ module D2LValence
     # @return [Hash]
     def credentials
       {
+        :end_point    => end_point,
         :app_key      => app_key,
         :app_id       => app_id,
         :user_id      => user_id,
-        :user_key    => user_key,
+        :user_key    => user_key
       }
     end
 
@@ -45,7 +46,7 @@ module D2LValence
     # Ensures that all credentials set during configuration are of a
     # valid type. Valid types are String and Symbol.
     #
-    # @raise [D2LValence::Error::ConfigurationError] Error is raised when
+    # Error is raised when
     #   supplied D2LValence credentials are not a String or Symbol.
     def validate_credential_type!
       credentials.each do |credential, value|

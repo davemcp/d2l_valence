@@ -1,14 +1,14 @@
-require 'json'
 require 'd2l_valence/client'
+require 'd2l_valence/rest/api/whoami_user'
 require 'faraday'
-require 'd2l_valence/error'
+require 'json'
 
 module D2LValence
   module REST
     # Wrapper for the D2LValence REST API
     #
     class Client < D2LValence::Client
-      ENDPOINT = 'https://valence.desire2learn.com:443'
+      # ENDPOINT = 'https://valence.desire2learn.com:443'
       WHOAMI = "/d2l/api/lp/1.0/users/whoami"
       
       def connection_options
@@ -23,7 +23,7 @@ module D2LValence
           },
         }
       end
-      
+            
       # @note Faraday's middleware stack implementation is comparable to that of Rack middleware.  The order of middleware is important: the first middleware on the list wraps all others, while the last middleware is the innermost one.
       # @see https://github.com/technoweenie/faraday#advanced-middleware-usage
       # @see http://mislav.uniqpath.com/2011/07/faraday-advanced-http/
@@ -39,7 +39,7 @@ module D2LValence
           # Handle error responses
           # builder.use Faraday::Response::RaiseError
           # Parse JSON response bodies
-          builder.use Faraday::ParseJson
+          # builder.use Faraday::ParseJson
           # Set Faraday's HTTP adapter
           builder.adapter Faraday.default_adapter
         end
@@ -50,21 +50,12 @@ module D2LValence
         request(:get, path, params)
       end
       
-      # return the WhoAmI User
+      # return the an instance of the WhoAmI User
       def whoami
         set_d2l_connection_params("GET", WHOAMI)
-        get WHOAMI
+        D2LValence::REST::API::WhoamiUser.new get(WHOAMI)
       end
 
-      # @return [Boolean]
-      def bearer_token?
-        !!bearer_token
-      end
-
-      # @return [Boolean]
-      def credentials?
-        super || bearer_token?
-      end
       
       def set_d2l_connection_params(method, path)
         current_time_stamp = Time.now.to_i #Unix timestamp
@@ -92,7 +83,7 @@ module D2LValence
       #
       # @return [Faraday::Connection]
       def connection
-        @connection ||= Faraday.new(ENDPOINT, connection_options)
+        @connection ||= Faraday.new(end_point, connection_options)
       end
       
       def request(method, path, params={})
@@ -100,8 +91,7 @@ module D2LValence
         response = connection.send(method.to_sym, path, params)
         response.env
       rescue Faraday::Error::ClientError, JSON::ParserError
-        puts response
-        # raise D2LValence::Error
+        raise "There was a problem with the request: #{method} #{path}/#{params.to_s}"
       end
       
     end
