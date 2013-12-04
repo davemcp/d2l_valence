@@ -1,4 +1,4 @@
-module D2lValence
+module D2LValence
   class Version
     MAJOR = 0
     MINOR = 0

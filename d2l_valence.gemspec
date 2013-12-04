@@ -5,7 +5,7 @@ require 'd2l_valence/version'
 
 Gem::Specification.new do |spec|
   spec.name          = "d2l_valence"
-  spec.version       = D2lValence::VERSION
+  spec.version       = "0.0.1"#D2lValence::Version
   spec.authors       = ["Dave McPherson"]
   spec.email         = ["davemcp@gmail.com"]
   spec.description   = %q{TODO: Write a gem description}
@@ -20,5 +20,9 @@ Gem::Specification.new do |spec|
 
   spec.add_development_dependency "bundler", "~> 1.3"
   spec.add_development_dependency "rake"
-  s.add_development_dependency "rspec", "~> 2.6"
+  spec.add_development_dependency "rspec", "~> 2.14"
+  spec.add_development_dependency "pry"
+  
+  spec.add_dependency "faraday", [">= 0.8", "< 0.10"]
+  spec.add_dependency "json", "~> 1.8"
 end
